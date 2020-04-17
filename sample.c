@@ -22,6 +22,7 @@ struct Token {
     Token *next;    //　次の入力トークン
     int val;        //　kindがTK_NUMの場合、その数値
     char *str;      //　トークン文字列
+    int len;        //　トークンの長さ
 };
 
 // 抽象構文木のノードの種類
@@ -84,8 +85,10 @@ void error_at(char *loc, char *fmt, ...) {
 
 //　次のトークンが期待している記号のときには、トークンを１つ読み進めて
 //　真を返す。それ以外の場合には偽を返す。
-bool consume(char op) {
-    if (token->kind != TK_RESERVED || token->str[0] != op)
+bool consume(char *op) {
+    if (token->kind != TK_RESERVED ||
+        strlen(op) != token->len ||
+        memcmp(token->str, op, token->len))
         return false;
     token = token->next;
     return true;
@@ -93,9 +96,11 @@ bool consume(char op) {
 
 //　次のトークンが期待している記号のときには、トークンを１つ読み進める。
 //　それ以外の場合にはエラーを報告する。
-void expect(char op) {
-    if (token->kind != TK_RESERVED || token->str[0] != op)
-        error_at(token->str,"'%c'ではありません",op);
+void expect(char *op) {
+    if (token->kind != TK_RESERVED ||
+        strlen(op) != token->len ||
+        memcmp(token->str, op, token->len))
+            error_at(token->str,"'%c'ではありません",op);
     token = token->next;
 }
 
@@ -114,10 +119,11 @@ bool at_eof() {
 }
 
 //　新しいトークンを作成してcurを繋げる
-Token *new_token(TokenKind kind, Token *cur, char *str) {
+Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
     tok->str = str;
+    tok->len = len;
     cur->next = tok;
     return tok;
 }
@@ -144,9 +150,9 @@ Node *expr(){
     Node *node = mul();
 
     for (;;) {
-        if (consume('+'))
+        if (consume("+"))
             node = new_node(ND_ADD, node, mul());
-        else if (consume('-'))
+        else if (consume("-"))
             node = new_node(ND_SUB, node, mul());
         else
             return node;
@@ -158,9 +164,9 @@ Node *mul(){
     Node *node = unary();
 
     for (;;) {
-        if (consume('*'))
+        if (consume("*"))
             node = new_node(ND_MUL, node, unary());
-        else if (consume('/'))
+        else if (consume("/"))
             node = new_node(ND_DIV, node, unary());
         else
             return node;
@@ -169,9 +175,9 @@ Node *mul(){
 
 // unary = ("+" | "-")? primary
 Node *unary(){
-    if (consume('+'))
+    if (consume("+"))
         return primary();
-    if (consume('-'))
+    if (consume("-"))
         return new_node(ND_SUB, new_node_num(0), primary());
     return primary();        
 }
@@ -179,9 +185,9 @@ Node *unary(){
 
 // primary = num | "(" expr ")"
 Node *primary(){
-    if (consume('(')) {
+    if (consume("(")) {
         Node *node = expr();
-        expect(')');
+        expect(")");
         return node;
     }
     
@@ -201,16 +207,14 @@ Token *tokenize() {
             p++;
             continue;
         }
-
         if (*p == '+' || *p == '-' || 
             *p == '*' || *p == '/' ||
             *p == '(' || *p == ')' ){
-            cur = new_token(TK_RESERVED, cur, p++);
+            cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
         }
-
         if (isdigit(*p)) {
-            cur = new_token(TK_NUM, cur, p);
+            cur = new_token(TK_NUM, cur, p, 0);
             cur->val = strtol(p, &p, 10);
             continue;
         }
@@ -218,7 +222,7 @@ Token *tokenize() {
         error_at(p,"トークナイズできません");
     }
 
-    new_token(TK_EOF, cur, p);
+    new_token(TK_EOF, cur, p, 0);
     return head.next;
 }
 
@@ -268,22 +272,7 @@ int main(int argc, char **argv){
     printf(".global main\n");
     printf("main:\n");
 
-    //　式の最初は数でなければならないので、それでチェックして
-    //　最初のmov命令を出力
-    //printf("  mov rax, %d\n", expect_number());
     gen(node);
-
-    //  ` + <数>`あるいは`- <数>`というトークンの並びを消費しつつ、
-    //  アセンブリを出力
-    //while (!at_eof()) {
-    //    if (consume('+')) {
-    //        printf("  add rax, %d\n", expect_number());
-    //        continue;
-    //    }
-    //
-    //    expect('-');
-    //    printf("  sub rax, %d\n", expect_number());
-    //}
 
     printf("  pop rax\n");
     printf("  ret\n");
