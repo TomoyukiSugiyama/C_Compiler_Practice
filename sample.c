@@ -159,7 +159,7 @@ Node *expr(){
     return equality();
 }
 
-// expr = relational ("==" relational | "!=" relational)*
+// equality = relational ("==" relational | "!=" relational)*
 Node *equality(){
     Node *node = relational();
 
@@ -173,7 +173,7 @@ Node *equality(){
     }
 }
 
-// expr = add ("<" add | "<=" add | ">" add | "=>" add)*
+// relational = add ("<" add | "<=" add | ">" add | "=>" add)*
 Node *relational(){
     Node *node = add();
 
@@ -192,7 +192,7 @@ Node *relational(){
 }
 
 
-// expr = mul ("+" mul | "-" mul)*
+// add = mul ("+" mul | "-" mul)*
 Node *add(){
     Node *node = mul();
 
