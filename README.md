@@ -13,3 +13,7 @@ make
 ```bash
 make test
 ```
+
+## x86 and amd64 instruction reference
+
+https://www.felixcloutier.com/x86/

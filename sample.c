@@ -184,7 +184,7 @@ Node *relational(){
             node = new_node(ND_GTE, node, add());
         else if (consume(">"))
             node = new_node(ND_LET, node, add());
-        else if (consume("=>"))
+        else if (consume(">="))
             node = new_node(ND_LTE, node, add());
         else
             return node;
@@ -254,6 +254,27 @@ Token *tokenize() {
             p++;
             continue;
         }
+
+        if (!strncmp(p, "==", 2) ||
+            !strncmp(p, "!=", 2)){
+            cur = new_token(TK_RESERVED, cur, p, 2);
+            p+=2;
+            continue;
+        } 
+
+        if (!strncmp(p, "<=", 2) ||
+            !strncmp(p, ">=", 2)){ 
+            cur = new_token(TK_RESERVED, cur, p, 2);
+            p+=2;
+            continue;
+        }
+
+        if (!strncmp(p, "<", 1) ||
+            !strncmp(p, ">", 1)){
+            cur = new_token(TK_RESERVED, cur, p++, 1);
+            continue;
+        } 
+
         if (*p == '+' || *p == '-' || 
             *p == '*' || *p == '/' ||
             *p == '(' || *p == ')' ){
@@ -298,6 +319,36 @@ void gen(Node *node) {
     case ND_DIV:
         printf("  cqo\n");
         printf("  idiv rdi\n");
+        break;
+    case ND_EQL:
+        printf("  cmp rax, rdi\n");
+        printf("  sete al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case ND_NEQ:
+        printf("  cmp rax, rdi\n");
+        printf("  setne al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case ND_GLT:
+        printf("  cmp rax, rdi\n");
+        printf("  setl al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case ND_GTE:
+        printf("  cmp rax, rdi\n");
+        printf("  setle al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case ND_LET:
+        printf("  cmp rdi, rax\n");
+        printf("  setl al\n");
+        printf("  movzb rax, al\n");
+        break;
+    case ND_LTE:
+        printf("  cmp rdi, rax\n");
+        printf("  setle al\n");
+        printf("  movzb rax, al\n");
         break;
     }
 
