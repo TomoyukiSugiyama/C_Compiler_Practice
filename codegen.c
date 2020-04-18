@@ -26,7 +26,7 @@ void gen(Node *node) {
         printf("  cqo\n");
         printf("  idiv rdi\n");
         break;
-    case ND_EQL:
+    case ND_EQ:
         printf("  cmp rax, rdi\n");
         printf("  sete al\n");
         printf("  movzb rax, al\n");
@@ -36,7 +36,7 @@ void gen(Node *node) {
         printf("  setne al\n");
         printf("  movzb rax, al\n");
         break;
-    case ND_GLT:
+    case ND_GT:
         printf("  cmp rax, rdi\n");
         printf("  setl al\n");
         printf("  movzb rax, al\n");
@@ -46,7 +46,7 @@ void gen(Node *node) {
         printf("  setle al\n");
         printf("  movzb rax, al\n");
         break;
-    case ND_LET:
+    case ND_LT:
         printf("  cmp rdi, rax\n");
         printf("  setl al\n");
         printf("  movzb rax, al\n");

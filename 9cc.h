@@ -31,11 +31,11 @@ typedef enum {
     ND_SUB,         // -
     ND_MUL,         // *
     ND_DIV,         // /
-    ND_EQL,         // ==
+    ND_EQ,         // ==
     ND_NEQ,         // !=
-    ND_GLT,         // <
+    ND_GT,         // <
     ND_GTE,         // <=
-    ND_LET,         // >
+    ND_LT,         // >
     ND_LTE,         // >=
     ND_NUM,         // 整数
 } NodeKind;

@@ -129,7 +129,7 @@ static Node *equality(){
 
     for (;;) {
         if (consume("=="))
-            node = new_node(ND_EQL, node, mul());
+            node = new_node(ND_EQ, node, mul());
         else if (consume("!="))
             node = new_node(ND_NEQ, node, mul());
         else
@@ -143,11 +143,11 @@ static Node *relational(){
 
     for (;;) {
         if (consume("<"))
-            node = new_node(ND_GLT, node, add());
+            node = new_node(ND_GT, node, add());
         else if (consume("<="))
             node = new_node(ND_GTE, node, add());
         else if (consume(">"))
-            node = new_node(ND_LET, node, add());
+            node = new_node(ND_LT, node, add());
         else if (consume(">="))
             node = new_node(ND_LTE, node, add());
         else
