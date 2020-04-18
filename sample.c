@@ -31,6 +31,12 @@ typedef enum {
     ND_SUB,         // -
     ND_MUL,         // *
     ND_DIV,         // /
+    ND_EQL,         // ==
+    ND_NEQ,         // !=
+    ND_GLT,         // <
+    ND_GTE,         // <=
+    ND_LET,         // >
+    ND_LTE,         // >=
     ND_NUM,         // 整数
 } NodeKind;
 
@@ -51,6 +57,9 @@ char *user_input;
 Token *token;
 
 Node *expr();
+Node *equality();
+Node *relational();
+Node *add();
 Node *mul();
 Node *primary();
 Node *unary();
@@ -145,8 +154,46 @@ Node *new_node_num(int val) {
     return node;
 }
 
-// expr = mul ("+" mul | "-" mul)*
+// expr = equality
 Node *expr(){
+    return equality();
+}
+
+// expr = relational ("==" relational | "!=" relational)*
+Node *equality(){
+    Node *node = relational();
+
+    for (;;) {
+        if (consume("=="))
+            node = new_node(ND_EQL, node, mul());
+        else if (consume("!="))
+            node = new_node(ND_NEQ, node, mul());
+        else
+            return node;
+    }
+}
+
+// expr = add ("<" add | "<=" add | ">" add | "=>" add)*
+Node *relational(){
+    Node *node = add();
+
+    for (;;) {
+        if (consume("<"))
+            node = new_node(ND_GLT, node, add());
+        else if (consume("<="))
+            node = new_node(ND_GTE, node, add());
+        else if (consume(">"))
+            node = new_node(ND_LET, node, add());
+        else if (consume("=>"))
+            node = new_node(ND_LTE, node, add());
+        else
+            return node;
+    }
+}
+
+
+// expr = mul ("+" mul | "-" mul)*
+Node *add(){
     Node *node = mul();
 
     for (;;) {
