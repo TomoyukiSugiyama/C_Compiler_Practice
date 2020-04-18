@@ -1,5 +1,8 @@
 #include "9cc.h"
 
+static Node *stmt();
+static Node *expr();
+static Node *assign();
 static Node *equality();
 static Node *relational();
 static Node *add();
@@ -18,13 +21,23 @@ static bool consume(char *op) {
     return true;
 }
 
+//　次のトークンが期待している識別子のときには、トークンを１つ読み進めて
+//　真を返す。それ以外の場合には偽を返す。
+static Token *consume_ident() {
+    if (token->kind != TK_IDENT )
+        return NULL;
+    Token *tmp = token;
+    token = token->next;
+    return tmp;
+}
+
 //　次のトークンが期待している記号のときには、トークンを１つ読み進める。
 //　それ以外の場合にはエラーを報告する。
 static void expect(char *op) {
     if (token->kind != TK_RESERVED ||
         strlen(op) != token->len ||
         memcmp(token->str, op, token->len))
-            error_at(token->str,"'%c'ではありません",op);
+            error_at(token->str,"'%s'ではありません",op);
     token = token->next;
 }
 
@@ -36,6 +49,10 @@ static int expect_number() {
     int val = token->val;
     token = token->next;
     return val;
+}
+
+static bool at_eof() {
+    return token->kind == TK_EOF;
 }
 
 //　新しいトークンを作成してcurを繋げる
@@ -84,16 +101,23 @@ Token *tokenize() {
 
         if (*p == '+' || *p == '-' || 
             *p == '*' || *p == '/' ||
-            *p == '(' || *p == ')' ){
+            *p == '(' || *p == ')' ||
+            *p == ';' || *p == '='){
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
         }
+
         if (isdigit(*p)) {
             cur = new_token(TK_NUM, cur, p, 0);
             cur->val = strtol(p, &p, 10);
             continue;
         }
 
+        if('a' <= *p && *p <= 'z') {
+            cur = new_token(TK_IDENT, cur, p++, 0);
+            cur->val = strtol(p, &p, 10);
+            continue;
+        }
         error_at(p,"トークナイズできません");
     }
 
@@ -118,9 +142,32 @@ static Node *new_node_num(int val) {
     return node;
 }
 
-// expr = equality
-Node *expr(){
-    return equality();
+// program = stmt*
+void program(){
+    int i = 0;
+    while (!at_eof())
+        code[i++] = stmt();
+    code[i] = NULL;
+}
+
+// stmt = expr ";"
+static Node *stmt(){
+    Node *node = expr();
+    expect(";");
+    return node;
+}
+
+// expr = assign
+static Node *expr(){
+    return assign();
+}
+
+// assign = equality ("=" assign)?
+static Node *assign(){
+    Node *node = equality();
+    if (consume("="))
+        node = new_node(ND_ASSIGN, node, assign());
+    return node;
 }
 
 // equality = relational ("==" relational | "!=" relational)*
@@ -194,8 +241,17 @@ static Node *unary(){
 }
 
 
-// primary = num | "(" expr ")"
+// primary = num | ident | "(" expr ")"
 static Node *primary(){
+
+    Token *tok = consume_ident();
+    if (tok) {
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_LVAR;
+        node->offset = (tok->str[0] - 'a' + 1) * 8;
+        return node;
+    }
+
     if (consume("(")) {
         Node *node = expr();
         expect(")");
