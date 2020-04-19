@@ -43,5 +43,7 @@ try 22 'b = 5 * 6 - 8;'
 try 14 '3 + 22/2;'
 try 14 'a = 3;_ = 5 * 6 -8; a + _ /2;'
 try 14 'aa3_a = 3;_ = 5 * 6 -8; aa3_a + _ /2;'
+try 5  'return 5;'
+try 3  'aa3_a = 3;return aa3_a;'
 
 echo ok

@@ -37,17 +37,23 @@ Token *tokenize() {
             continue;
         }
 
+        if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])) {
+            cur = new_token(TK_RESERVED, cur, p, 6);
+            p += 6;
+            continue;            
+        }
+
         if (!strncmp(p, "==", 2) ||
             !strncmp(p, "!=", 2)){
             cur = new_token(TK_RESERVED, cur, p, 2);
-            p+=2;
+            p += 2;
             continue;
         } 
 
         if (!strncmp(p, "<=", 2) ||
             !strncmp(p, ">=", 2)){ 
             cur = new_token(TK_RESERVED, cur, p, 2);
-            p+=2;
+            p += 2;
             continue;
         }
 
@@ -76,9 +82,10 @@ Token *tokenize() {
             while(is_alnum(*len))
                 len++;
             cur = new_token(TK_IDENT, cur, p, len-p);
-            p = len + 1;
+            p = len;
             continue;
         }
+
         error_at(p,"トークナイズできません");
     }
 

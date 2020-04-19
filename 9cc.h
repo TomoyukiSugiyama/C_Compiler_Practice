@@ -40,6 +40,7 @@ typedef enum {
     ND_LTE,         // >=
     ND_ASSIGN,      // =
     ND_LVAR,        // ローカル変数
+    ND_RETURN,      // return
     ND_NUM,         // 整数
 } NodeKind;
 
