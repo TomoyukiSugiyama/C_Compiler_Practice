@@ -92,10 +92,21 @@ static Node *stmt() {
     node = calloc(1, sizeof(Node));
     node->kind = ND_RETURN;
     node->lhs = expr();
+    expect(";");
+  } else if (consume("if")) {
+    expect("(");
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_IF;
+    node->lhs = expr();
+    expect(")");
+    node->rhs = stmt();
+    if (consume("else")) {
+      node = new_node(ND_ELSE, node, stmt());
+    }
   } else {
     node = expr();
+    expect(";");
   }
-  expect(";");
   return node;
 }
 

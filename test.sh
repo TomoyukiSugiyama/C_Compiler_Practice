@@ -45,5 +45,5 @@ try 14 'a = 3;_ = 5 * 6 -8; a + _ /2;'
 try 14 'aa3_a = 3;_ = 5 * 6 -8; aa3_a + _ /2;'
 try 5  'return 5;'
 try 3  'aa3_a = 3;return aa3_a;'
-
+try 1  'a=1;if (a==1) a=1;'
 echo ok
