@@ -97,9 +97,9 @@ static Node *stmt() {
     expect("(");
     node = calloc(1, sizeof(Node));
     node->kind = ND_IF;
-    node->lhs = expr();
+    node->cond = expr();
     expect(")");
-    node->rhs = stmt();
+    node->stat = stmt();
     if (consume("else")) {
       node->els = stmt();
     }
@@ -107,9 +107,9 @@ static Node *stmt() {
     expect("(");
     node = calloc(1, sizeof(Node));
     node->kind = ND_WHILE;
-    node->lhs = expr();
+    node->cond = expr();
     expect(")");
-    node->rhs = stmt();
+    node->stat = stmt();
   } else {
     node = expr();
     expect(";");

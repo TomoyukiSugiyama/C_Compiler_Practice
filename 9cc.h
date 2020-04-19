@@ -51,9 +51,17 @@ struct Node {
   NodeKind kind; // ノードの型
   Node *lhs;     // 左辺
   Node *rhs;     // 右辺
-  Node *els;     // 右辺
-  int val;       // kindがND_NUMの場合のみ使う
-  int offset;    // kindがND_LVARの場合のみ使う
+
+  // if-else/for/while statement
+  Node *init; // init-expression
+  Node *cond; // cond-expression
+  Node *loop; // loop-expression
+  Node *els;  // else(option)
+
+  Node *stat; // statement
+
+  int val;    // kindがND_NUMの場合のみ使う
+  int offset; // kindがND_LVARの場合のみ使う
 };
 
 typedef struct LVar LVar;
