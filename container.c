@@ -2,7 +2,8 @@
 
 //　エラーを報告するための関数
 //　printfと同じ引数を取る
-void error(char *fmt, ...) {
+void error(char *fmt, ...)
+{
     va_list ap;
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
@@ -11,7 +12,8 @@ void error(char *fmt, ...) {
 }
 
 // エラー箇所を報告する
-void error_at(char *loc, char *fmt, ...) {
+void error_at(char *loc, char *fmt, ...)
+{
     va_list ap;
     va_start(ap, fmt);
 

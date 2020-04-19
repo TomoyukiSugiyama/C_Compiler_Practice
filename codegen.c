@@ -1,6 +1,7 @@
 #include "9cc.h"
 
-static void gen_lval(Node *node) {
+static void gen_lval(Node *node)
+{
     if (node->kind != ND_LVAR)
         error("代入の左辺値が変数ではありません");
 
@@ -9,8 +10,10 @@ static void gen_lval(Node *node) {
     printf("  push rax\n");
 }
 
-void gen(Node *node) {
-    switch (node->kind) {
+void gen(Node *node)
+{
+    switch (node->kind)
+    {
     case ND_NUM:
         printf("  push %d\n", node->val);
         return;
@@ -28,14 +31,14 @@ void gen(Node *node) {
         printf("  mov [rax], rdi\n");
         printf("  push rdi\n");
         return;
-     case ND_RETURN:
+    case ND_RETURN:
         gen(node->lhs);
         printf("  pop rax\n");
         printf("  mov rsp, rbp\n");
         printf("  pop rbp\n");
         printf("  ret\n");
         return;
-   }
+    }
 
     gen(node->lhs);
     gen(node->rhs);
@@ -43,7 +46,8 @@ void gen(Node *node) {
     printf("  pop rdi\n");
     printf("  pop rax\n");
 
-    switch (node->kind) {
+    switch (node->kind)
+    {
     case ND_ADD:
         printf("  add rax, rdi\n");
         break;
