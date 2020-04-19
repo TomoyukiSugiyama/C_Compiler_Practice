@@ -1,3 +1,6 @@
+![format_check](https://github.com/TomoyukiSugiyama/C_Compiler_Practice/workflows/format_check/badge.svg)
+![test](https://github.com/TomoyukiSugiyama/C_Compiler_Practice/workflows/test/badge.svg)
+
 # C_Compiler_Practice
 
 https://www.sigbus.info/compilerbook
