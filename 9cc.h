@@ -42,6 +42,7 @@ typedef enum {
   ND_IF,     // if
   ND_WHILE,  // while
   ND_FOR,    // for
+  ND_BLOCK,  // {}
   ND_NUM,    // 整数
 } NodeKind;
 
@@ -84,6 +85,7 @@ char *user_input;
 //　現在着目しているトークン
 Token *token;
 Node *code[100];
+Node *block[100];
 
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);

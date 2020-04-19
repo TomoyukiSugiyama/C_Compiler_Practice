@@ -127,6 +127,16 @@ static Node *stmt() {
       expect(")");
     }
     node->stat = stmt();
+  } else if (consume("{")) {
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_BLOCK;
+    int i = 0;
+    while (!consume("}")) {
+      if (at_eof())
+        error_at(token->str, "'}'ではありません");
+      block[i++] = stmt();
+    }
+    block[i] = NULL;
   } else {
     node = expr();
     expect(";");

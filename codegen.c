@@ -83,6 +83,15 @@ void gen(Node *node) {
     printf("  jmp .Lbegin%03d\n", label_cnt);
     printf(".Lend%03d:\n", label_cnt);
     return;
+  case ND_BLOCK:
+    for (int i = 0; block[i]; i++) {
+      gen(block[i]);
+
+      //　式の評価結果としてスタックに一つの値が残っている
+      //　はずなので、スタックが溢れないようにポップしておく
+      printf("  pop rax\n");
+    }
+    return;
   }
 
   gen(node->lhs);

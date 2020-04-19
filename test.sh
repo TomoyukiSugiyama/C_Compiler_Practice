@@ -51,5 +51,5 @@ try 3   "$IF_TEST"
 WHILE_TEST=`cat test/while.c`
 try 5  "$WHILE_TEST"
 FOR_TEST=`cat test/for.c`
-try 10  "$FOR_TEST"
+try 15  "$FOR_TEST"
 echo ok
