@@ -82,3 +82,12 @@ void program();
 
 Token *tokenize();
 void gen(Node *node);
+
+//#define DEBUG 11111
+#if DEBUG
+#define DEBUG_PRINT() do{\
+printf("error at %s:%d\n",__FILE__,__LINE__);\
+}while(0);
+#else
+#define DEBUG_PRINT() ;
+#endif

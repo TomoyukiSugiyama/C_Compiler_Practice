@@ -5,11 +5,13 @@ int main(int argc, char **argv){
         error("%s:引数の個数が正しくありません\n",argv[0]);
         return 1;
     }
-
+DEBUG_PRINT();
     user_input = argv[1];
     // トークナイズする
     token = tokenize();
+DEBUG_PRINT();
     program();
+DEBUG_PRINT();
 
     printf(".intel_syntax noprefix\n");
     printf(".global main\n");
