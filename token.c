@@ -1,13 +1,13 @@
 #include "9cc.h"
 
-int is_alnum(char c) {
+static int is_alnum(char c) {
     return ('a' <= c && c <= 'z') ||
            ('A' <= c && c <= 'Z') ||
            ('0' <= c && c <= '9') ||
            (c == '_' );
 }
 
-int is_ident(char c) {
+static int is_ident(char c) {
     return ('a' <= c && c <= 'z') ||
            ('A' <= c && c <= 'Z') ||
            (c == '_' );

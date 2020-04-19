@@ -80,5 +80,4 @@ void error_at(char *loc, char *fmt, ...);
 void program();
 
 Token *tokenize();
-void gen_lval(Node *node);
 void gen(Node *node);
