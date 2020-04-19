@@ -40,6 +40,7 @@ typedef enum {
   ND_LVAR,   // ローカル変数
   ND_RETURN, // return
   ND_IF,     // if
+  ND_WHILE,  // while
   ND_NUM,    // 整数
 } NodeKind;
 

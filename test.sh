@@ -45,6 +45,9 @@ try 14 'a = 3;_ = 5 * 6 -8; a + _ /2;'
 try 14 'aa3_a = 3;_ = 5 * 6 -8; aa3_a + _ /2;'
 try 5  'return 5;'
 try 3  'aa3_a = 3;return aa3_a;'
-try 1  'a=1;if (a==1) a=1;'
-try 2  'a=0;if (a==0) a=5; else a=4;if (a==1) a=3; else a=2;'
+
+IF_TEST=`cat test/if.c`
+try 3   "$IF_TEST"
+WHILE_TEST=`cat test/while.c`
+try 5  "$WHILE_TEST"
 echo ok
