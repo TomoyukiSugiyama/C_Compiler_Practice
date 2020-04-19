@@ -110,6 +110,23 @@ static Node *stmt() {
     node->cond = expr();
     expect(")");
     node->stat = stmt();
+  } else if (consume("for")) {
+    expect("(");
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_FOR;
+    if (!consume(";")) {
+      node->init = expr();
+      expect(";");
+    }
+    if (!consume(";")) {
+      node->cond = expr();
+      expect(";");
+    }
+    if (!consume(")")) {
+      node->loop = expr();
+      expect(")");
+    }
+    node->stat = stmt();
   } else {
     node = expr();
     expect(";");
