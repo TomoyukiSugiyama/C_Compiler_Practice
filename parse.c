@@ -101,7 +101,7 @@ static Node *stmt() {
     expect(")");
     node->rhs = stmt();
     if (consume("else")) {
-      node = new_node(ND_ELSE, node, stmt());
+      node->els = stmt();
     }
   } else {
     node = expr();
