@@ -55,6 +55,14 @@ static bool at_eof() {
     return token->kind == TK_EOF;
 }
 
+// 変数を名前で検索する。見つからなかった場合はNULLを返す、
+LVar *find_lvar(Token *tok) {
+    for (LVar *var = locals; var; var = var->next)
+        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+            return var;
+    return NULL;
+}
+
 //　新しいノードを作成してlhs,rhsを繋げる
 static Node *new_node(NodeKind kind, Node *lhs, Node *rhs) {
     Node *node = calloc(1, sizeof(Node));
@@ -178,7 +186,22 @@ static Node *primary(){
     if (tok) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
-        node->offset = (tok->str[0] - 'a' + 1) * 8;
+        LVar *lvar = find_lvar(tok);
+        if (lvar) {
+            node->offset = lvar->offset;
+        } else {
+            lvar = calloc(1, sizeof(LVar));
+            lvar->next = locals;
+            lvar->name = tok->str;
+            lvar->len = tok->len;
+            if(locals == NULL){
+                lvar->offset = 0;
+            }else{
+                lvar->offset = locals->offset + 8;
+            }
+            node->offset = lvar->offset;
+            locals = lvar;
+        }
         return node;
     }
 

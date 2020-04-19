@@ -1,5 +1,18 @@
 #include "9cc.h"
 
+int is_alnum(char c) {
+    return ('a' <= c && c <= 'z') ||
+           ('A' <= c && c <= 'Z') ||
+           ('0' <= c && c <= '9') ||
+           (c == '_' );
+}
+
+int is_ident(char c) {
+    return ('a' <= c && c <= 'z') ||
+           ('A' <= c && c <= 'Z') ||
+           (c == '_' );
+}
+
 //　新しいトークンを作成してcurを繋げる
 static Token *new_token(TokenKind kind, Token *cur, char *str, int len) {
     Token *tok = calloc(1, sizeof(Token));
@@ -58,9 +71,12 @@ Token *tokenize() {
             continue;
         }
 
-        if('a' <= *p && *p <= 'z') {
-            cur = new_token(TK_IDENT, cur, p++, 0);
-            cur->val = strtol(p, &p, 10);
+        if(is_ident(*p)) {
+            char *len = p+1;
+            while(is_alnum(*len))
+                len++;
+            cur = new_token(TK_IDENT, cur, p, len-p);
+            p = len + 1;
             continue;
         }
         error_at(p,"トークナイズできません");
