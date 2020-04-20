@@ -9,6 +9,7 @@ static Node *add();
 static Node *mul();
 static Node *unary();
 static Node *primary();
+static Node *args();
 
 //　次のトークンが期待している記号のときには、トークンを１つ読み進めて
 //　真を返す。それ以外の場合には偽を返す。
@@ -224,7 +225,7 @@ static Node *unary() {
   return primary();
 }
 
-// primary = num | ident | "(" expr ")"
+// primary = num | ident ("(" args)? | "(" expr ")"
 static Node *primary() {
 
   Token *tok = consume_ident();
@@ -233,7 +234,7 @@ static Node *primary() {
     if (consume("(")) {
       node->kind = ND_FUNC;
       node->funcname = strndup(tok->str, tok->len);
-      expect(")");
+      node->args = args();
     } else {
       node->kind = ND_LVAR;
       LVar *lvar = find_lvar(tok);
@@ -262,4 +263,18 @@ static Node *primary() {
     return node;
   }
   return new_node_num(expect_number());
+}
+
+// args = (assign ("," assign)*)?
+static Node *args() {
+  if (consume(")"))
+    return NULL;
+  Node *node = assign();
+  Node *tmp = node;
+  while (consume(",")) {
+    tmp->next = assign();
+    tmp = tmp->next;
+  }
+  expect(")");
+  return node;
 }

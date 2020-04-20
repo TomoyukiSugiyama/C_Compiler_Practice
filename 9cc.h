@@ -45,6 +45,7 @@ typedef enum {
   ND_FOR,    // for
   ND_BLOCK,  // {}
   ND_FUNC,   // 関数
+  ND_ARGS,   // 引数
   ND_NUM,    // 整数
 } NodeKind;
 
@@ -55,7 +56,7 @@ struct Node {
   NodeKind kind; // ノードの型
   Node *lhs;     // 左辺
   Node *rhs;     // 右辺
-
+  Node *next;    // 次のノード
   // if-else/for/while statement
   Node *init; // init-expression
   Node *cond; // cond-expression
@@ -64,6 +65,7 @@ struct Node {
 
   Node *stat;     // statement
   char *funcname; // funcname
+  Node *args;     // 引数
   int val;        // kindがND_NUMの場合のみ使う
   int offset;     // kindがND_LVARの場合のみ使う
 };
