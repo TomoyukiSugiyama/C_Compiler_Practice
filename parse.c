@@ -232,6 +232,7 @@ static Node *primary() {
     Node *node = calloc(1, sizeof(Node));
     if (consume("(")) {
       node->kind = ND_FUNC;
+      node->funcname = strndup(tok->str, tok->len);
       expect(")");
     } else {
       node->kind = ND_LVAR;

@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -61,10 +62,10 @@ struct Node {
   Node *loop; // loop-expression
   Node *els;  // else(option)
 
-  Node *stat; // statement
-
-  int val;    // kindがND_NUMの場合のみ使う
-  int offset; // kindがND_LVARの場合のみ使う
+  Node *stat;     // statement
+  char *funcname; // funcname
+  int val;        // kindがND_NUMの場合のみ使う
+  int offset;     // kindがND_LVARの場合のみ使う
 };
 
 typedef struct LVar LVar;
