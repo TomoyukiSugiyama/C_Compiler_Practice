@@ -77,25 +77,24 @@ struct LVar {
   int offset; // RBPからのオフセット
 };
 
-// ローカル変数
-LVar *locals;
-
 typedef struct Function Function;
 // 関数
 struct Function {
   Function *next;
   char *name;
-}
+};
 
 // 入力プログラム
-char *user_input;
+extern char *user_input;
 
 //　現在着目しているトークン
-Token *token;
+extern Token *token;
 // パースの結果を保存
-Node *code[100];
+extern Node *code[100];
 // ブロック(複文)を保存
-Node *block[100];
+extern Node *block[100];
+// ローカル変数
+extern LVar *locals;
 
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
