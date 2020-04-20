@@ -43,6 +43,7 @@ typedef enum {
   ND_WHILE,  // while
   ND_FOR,    // for
   ND_BLOCK,  // {}
+  ND_FUNC,   // 関数
   ND_NUM,    // 整数
 } NodeKind;
 
@@ -79,12 +80,21 @@ struct LVar {
 // ローカル変数
 LVar *locals;
 
+typedef struct Function Function;
+// 関数
+struct Function {
+  Function *next;
+  char *name;
+}
+
 // 入力プログラム
 char *user_input;
 
 //　現在着目しているトークン
 Token *token;
+// パースの結果を保存
 Node *code[100];
+// ブロック(複文)を保存
 Node *block[100];
 
 void error(char *fmt, ...);
