@@ -46,10 +46,10 @@ try 14 'aa3_a = 3;_ = 5 * 6 -8; aa3_a + _ /2;'
 try 5  'return 5;'
 try 3  'aa3_a = 3;return aa3_a;'
 
-IF_TEST=`cat test/if.c`
+IF_TEST=`cat test_asset/if.c`
 try 3   "$IF_TEST"
-WHILE_TEST=`cat test/while.c`
+WHILE_TEST=`cat test_asset/while.c`
 try 5  "$WHILE_TEST"
-FOR_TEST=`cat test/for.c`
+FOR_TEST=`cat test_asset/for.c`
 try 15  "$FOR_TEST"
 echo ok
