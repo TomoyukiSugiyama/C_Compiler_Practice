@@ -246,7 +246,7 @@ static Node *primary() {
         lvar->name = tok->str;
         lvar->len = tok->len;
         if (locals == NULL) {
-          lvar->offset = 0;
+          lvar->offset = 8;
         } else {
           lvar->offset = locals->offset + 8;
         }

@@ -93,10 +93,10 @@ void gen(Node *node) {
     }
     return;
   case ND_FUNC:
-    printf("  call %s\n", node->funcname);
     for (Node *arg = node->args; arg; arg = arg->next) {
       gen(arg);
     }
+    printf("  call %s\n", node->funcname);
     return;
   }
 
