@@ -104,6 +104,12 @@ void gen(Node *node) {
     for (int i = 1; i <= arg_num; i++) {
       printf("  pop %s\n", arg_reg[arg_num - i]);
     }
+    printf("  mov rax, rsp\n");
+    printf("  and rax, 15\n");
+    printf("  cmp rax, 0\n");
+    printf("  je .Laligned\n");
+    printf("  sub rsp, 8\n");
+    printf(".Laligned:\n");
     printf("  call %s\n", node->funcname);
     return;
   }
