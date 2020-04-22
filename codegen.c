@@ -102,7 +102,7 @@ void gen(Node *node) {
       error("6個以上の引数はサポートされていません\n");
     char *arg_reg[10] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
     for (int i = 1; i <= arg_num; i++) {
-      printf("  pop %s\n", arg_reg[i - 1]);
+      printf("  pop %s\n", arg_reg[arg_num - i]);
     }
     printf("  call %s\n", node->funcname);
     return;

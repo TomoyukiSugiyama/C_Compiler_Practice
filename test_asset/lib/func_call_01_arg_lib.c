@@ -1,0 +1,1 @@
+int foo(int x) { printf("01_arg : %d\n", x); }

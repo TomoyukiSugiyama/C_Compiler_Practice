@@ -1,1 +1,1 @@
-int foo(int x, int y) { printf("02_arg : %d\n", x + y); }
+int foo(int x, int y) { printf("02_arg : x(%d) + y(%d) = %d\n", x, y, x + y); }

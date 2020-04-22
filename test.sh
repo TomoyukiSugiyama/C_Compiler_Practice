@@ -67,7 +67,28 @@ FUNC_TEST=`cat test_asset/func_call_no_arg.c`
 FUNC_LIB="test_asset/lib/func_call_no_arg_lib.o"
 func_call "$FUNC_TEST" $FUNC_LIB
 
+FUNC_TEST=`cat test_asset/func_call_01_arg.c`
+FUNC_LIB="test_asset/lib/func_call_01_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
 FUNC_TEST=`cat test_asset/func_call_02_arg.c`
 FUNC_LIB="test_asset/lib/func_call_02_arg_lib.o"
 func_call "$FUNC_TEST" $FUNC_LIB
+
+FUNC_TEST=`cat test_asset/func_call_03_arg.c`
+FUNC_LIB="test_asset/lib/func_call_03_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
+FUNC_TEST=`cat test_asset/func_call_04_arg.c`
+FUNC_LIB="test_asset/lib/func_call_04_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
+FUNC_TEST=`cat test_asset/func_call_05_arg.c`
+FUNC_LIB="test_asset/lib/func_call_05_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
+FUNC_TEST=`cat test_asset/func_call_06_arg.c`
+FUNC_LIB="test_asset/lib/func_call_06_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
 echo ok
