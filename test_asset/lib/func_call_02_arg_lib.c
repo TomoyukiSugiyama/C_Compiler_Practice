@@ -1,0 +1,1 @@
+int foo(int x, int y) { printf("02_arg : %d\n", x + y); }

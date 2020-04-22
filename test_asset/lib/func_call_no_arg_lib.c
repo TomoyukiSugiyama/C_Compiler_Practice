@@ -1,1 +1,1 @@
-int foo() { printf("OK\n"); }
+int foo() { printf("no_arg : OK\n"); }

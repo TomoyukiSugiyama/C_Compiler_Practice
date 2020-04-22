@@ -52,4 +52,22 @@ WHILE_TEST=`cat test_asset/while.c`
 try 5  "$WHILE_TEST"
 FOR_TEST=`cat test_asset/for.c`
 try 15  "$FOR_TEST"
+
+func_call()  {
+    input="$1"
+    lib="$2"
+
+    ./9cc "$input" > tmp.s
+    gcc -o tmp tmp.s $lib
+    ./tmp
+}
+(cd test_asset/lib ; make)
+
+FUNC_TEST=`cat test_asset/func_call_no_arg.c`
+FUNC_LIB="test_asset/lib/func_call_no_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
+FUNC_TEST=`cat test_asset/func_call_02_arg.c`
+FUNC_LIB="test_asset/lib/func_call_02_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
 echo ok
