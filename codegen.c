@@ -11,6 +11,7 @@ static void gen_lval(Node *node) {
 
 void gen(Node *node) {
   static int label_cnt = 0;
+  int arg_num = 0;
 
   switch (node->kind) {
   case ND_NUM:
@@ -95,6 +96,13 @@ void gen(Node *node) {
   case ND_FUNC:
     for (Node *arg = node->args; arg; arg = arg->next) {
       gen(arg);
+      arg_num++;
+    }
+    if (arg_num > 6)
+      error("6個以上の引数はサポートされていません\n");
+    char *arg_reg[10] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+    for (int i = 1; i <= arg_num; i++) {
+      printf("  pop %s\n", arg_reg[i - 1]);
     }
     printf("  call %s\n", node->funcname);
     return;
