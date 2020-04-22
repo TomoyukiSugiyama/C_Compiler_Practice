@@ -7,7 +7,7 @@ Token *token;
 // ローカル変数
 LVar *locals;
 // パースの結果を保存
-Node *code[100];
+Node *codes;
 
 //　エラーを報告するための関数
 //　printfと同じ引数を取る

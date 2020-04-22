@@ -23,9 +23,8 @@ int main(int argc, char **argv) {
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
   printf("  sub rsp, 208\n");
-
-  for (int i = 0; code[i]; i++) {
-    gen(code[i]);
+  for (Node *code = codes->next; code; code = code->next) {
+    gen(code);
 
     //　式の評価結果としてスタックに一つの値が残っている
     //　はずなので、スタックが溢れないようにポップしておく

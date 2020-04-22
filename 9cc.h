@@ -93,7 +93,7 @@ extern char *user_input;
 //　現在着目しているトークン
 extern Token *token;
 // パースの結果を保存
-extern Node *code[100];
+extern Node *codes;
 // ブロック(複文)を保存
 extern Node *block[100];
 // ローカル変数

@@ -80,9 +80,14 @@ static Node *new_node_num(int val) {
 // program = stmt*
 void program() {
   int i = 0;
-  while (!at_eof())
-    code[i++] = stmt();
-  code[i] = NULL;
+  codes = calloc(1, sizeof(Node));
+  codes->next = NULL;
+  Node *tmp = codes;
+
+  while (!at_eof()) {
+    tmp->next = stmt();
+    tmp = tmp->next;
+  }
 }
 
 // stmt = expr ";"
