@@ -85,9 +85,9 @@ void gen(Node *node) {
     printf(".Lend%03d:\n", label_cnt);
     return;
   case ND_BLOCK:
-    for (int i = 0; block[i]; i++) {
-      gen(block[i]);
-
+    for (Node *block = node->next; block; block = block->next) {
+      gen(block);
+      arg_num++;
       //　式の評価結果としてスタックに一つの値が残っている
       //　はずなので、スタックが溢れないようにポップしておく
       printf("  pop rax\n");

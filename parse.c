@@ -86,6 +86,11 @@ void program() {
 }
 
 // stmt = expr ";"
+//      | "if" "(" expr ")" stmt ("else" stmt)?
+//      | "while" "(" expr ")" stmt
+//      | "for" "(" expr? ";" expr? ";" expr? ")" stmt
+//      | "return" expr ";"
+//      | "{" stmt* "}"
 static Node *stmt() {
   Node *node;
 
@@ -131,13 +136,11 @@ static Node *stmt() {
   } else if (consume("{")) {
     node = calloc(1, sizeof(Node));
     node->kind = ND_BLOCK;
-    int i = 0;
+    Node *tmp = node;
     while (!consume("}")) {
-      if (at_eof())
-        error_at(token->str, "'}'ではありません");
-      block[i++] = stmt();
+      tmp->next = stmt();
+      tmp = tmp->next;
     }
-    block[i] = NULL;
   } else {
     node = expr();
     expect(";");

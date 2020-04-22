@@ -8,8 +8,6 @@ Token *token;
 LVar *locals;
 // パースの結果を保存
 Node *code[100];
-// ブロック(複文)を保存
-Node *block[100];
 
 //　エラーを報告するための関数
 //　printfと同じ引数を取る
