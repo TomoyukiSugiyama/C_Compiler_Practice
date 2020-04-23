@@ -67,6 +67,7 @@ struct Node {
   Node *stat;     // statement
   char *funcname; // funcname
   Node *args;     // 引数
+  Node *block;    // { }
   int val;        // kindがND_NUMの場合のみ使う
   int offset;     // kindがND_LVARの場合のみ使う
 };

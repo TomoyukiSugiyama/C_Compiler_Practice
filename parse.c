@@ -115,7 +115,7 @@ static Node *function() {
         tmp->next = stmt();
         tmp = tmp->next;
       }
-      node->next = block;
+      node->block = block;
     }
     DEBUG_PRINT();
     return node;

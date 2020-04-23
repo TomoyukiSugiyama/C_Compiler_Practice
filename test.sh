@@ -94,4 +94,7 @@ func_call "$FUNC_TEST" $FUNC_LIB
 try 5  'main(x,y){a=5;x=3;y=2;return a;}'
 try 3  'main(x,y){a=5;x=3;y=2;return x;}'
 try 2  'main(x,y){a=5;x=3;y=2;return y;}'
+
+#try 4  'main(){a=5;x=3;y=2;foo(x,y);return y;} foo(x,y){return y+2;}'
+
 echo ok

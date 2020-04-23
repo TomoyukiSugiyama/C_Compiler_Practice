@@ -12,6 +12,7 @@ static void gen_lval(Node *node) {
 void gen(Node *node) {
   static int label_cnt = 0;
   int arg_num = 0;
+  char *arg_reg[10] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
   switch (node->kind) {
   case ND_NUM:
@@ -101,7 +102,6 @@ void gen(Node *node) {
     }
     if (arg_num > 6)
       error("6個以上の引数はサポートされていません\n");
-    char *arg_reg[10] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
     for (int i = 1; i <= arg_num; i++) {
       printf("  pop %s\n", arg_reg[arg_num - i]);
     }
@@ -115,28 +115,30 @@ void gen(Node *node) {
     label_cnt++;
     return;
   case ND_FUNC:
-    printf("%s:\n", node->funcname);
-    //　プロローグ
-    printf("  push rbp\n");
-    printf("  mov rbp, rsp\n");
-    arg_num = 0;
-    //　引数の領域を確保する。
-    for (Node *arg = node->args; arg; arg = arg->next) {
-      printf("  sub rsp, %d\n", arg->offset);
-      arg_num++;
+    for (Node *func = node; func; func = func->next) {
+      printf("%s:\n", func->funcname);
+      //　プロローグ
+      printf("  push rbp\n");
+      printf("  mov rbp, rsp\n");
+      arg_num = 0;
+      //　引数の領域を確保する。
+      for (Node *arg = func->args; arg; arg = arg->next) {
+        // printf("  sub rsp, %d\n", arg->offset);
+        printf("  push %s\n", arg_reg[arg_num]);
+        arg_num++;
+      }
+      //　ローカル変数４個分の領域を確保する。
+      printf("  sub rsp, 32\n");
+
+      // ブロックの中身を生成する。
+      gen(func->block);
+
+      //　エピローグ
+      //　最後の式の結果がRAXに残っているのでそれが返り値になる
+      printf("  mov rsp, rbp\n");
+      printf("  pop rbp\n");
+      printf("  ret\n");
     }
-    //　ローカル変数４個分の領域を確保する。
-    printf("  sub rsp, 32\n");
-
-    // ブロックの中身を生成する。
-    gen(node->next);
-
-    //　エピローグ
-    //　最後の式の結果がRAXに残っているのでそれが返り値になる
-    printf("  mov rsp, rbp\n");
-    printf("  pop rbp\n");
-    printf("  ret\n");
-
     return;
   }
 
