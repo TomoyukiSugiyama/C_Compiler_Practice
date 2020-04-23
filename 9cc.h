@@ -27,26 +27,27 @@ struct Token {
 
 // 抽象構文木のノードの種類
 typedef enum {
-  ND_ADD,    // +
-  ND_SUB,    // -
-  ND_MUL,    // *
-  ND_DIV,    // /
-  ND_EQ,     // ==
-  ND_NEQ,    // !=
-  ND_GT,     // <
-  ND_GTE,    // <=
-  ND_LT,     // >
-  ND_LTE,    // >=
-  ND_ASSIGN, // =
-  ND_LVAR,   // ローカル変数
-  ND_RETURN, // return
-  ND_IF,     // if
-  ND_WHILE,  // while
-  ND_FOR,    // for
-  ND_BLOCK,  // {}
-  ND_FUNC,   // 関数
-  ND_ARGS,   // 引数
-  ND_NUM,    // 整数
+  ND_ADD,      // +
+  ND_SUB,      // -
+  ND_MUL,      // *
+  ND_DIV,      // /
+  ND_EQ,       // ==
+  ND_NEQ,      // !=
+  ND_GT,       // <
+  ND_GTE,      // <=
+  ND_LT,       // >
+  ND_LTE,      // >=
+  ND_ASSIGN,   // =
+  ND_LVAR,     // ローカル変数
+  ND_RETURN,   // return
+  ND_IF,       // if
+  ND_WHILE,    // while
+  ND_FOR,      // for
+  ND_BLOCK,    // {}
+  ND_FUNC,     // 関数
+  ND_FUNCCALL, //関数呼び出し
+  ND_ARGS,     // 引数
+  ND_NUM,      // 整数
 } NodeKind;
 
 typedef struct Node Node;
@@ -95,7 +96,7 @@ extern Token *token;
 // パースの結果を保存
 extern Node *codes;
 // ブロック(複文)を保存
-extern Node *block[100];
+// extern Node *block[100];
 // ローカル変数
 extern LVar *locals;
 
@@ -106,7 +107,6 @@ void program();
 
 Token *tokenize();
 void gen(Node *node);
-
 //#define DEBUG 11111
 #if DEBUG
 #define DEBUG_PRINT()                                                          \

@@ -1,5 +1,8 @@
 #include "9cc.h"
 
+static Node *function();
+static Node *function_args();
+static Node *create_lvar();
 static Node *stmt();
 static Node *expr();
 static Node *assign();
@@ -77,7 +80,7 @@ static Node *new_node_num(int val) {
   return node;
 }
 
-// program = stmt*
+// program = function*
 void program() {
   int i = 0;
   codes = calloc(1, sizeof(Node));
@@ -85,11 +88,88 @@ void program() {
   Node *tmp = codes;
 
   while (!at_eof()) {
-    tmp->next = stmt();
+    tmp->next = function();
     tmp = tmp->next;
   }
 }
+// function = ident "(" args ("{" stmt* "}")?
+static Node *function() {
+  DEBUG_PRINT();
+  Token *tok = consume_ident();
+  if (tok) {
+    Node *node = calloc(1, sizeof(Node));
+    DEBUG_PRINT();
 
+    if (consume("(")) {
+      node->kind = ND_FUNC;
+      node->funcname = strndup(tok->str, tok->len);
+      node->args = function_args();
+    }
+    DEBUG_PRINT();
+    if (consume("{")) {
+      Node *block = calloc(1, sizeof(Node));
+      block->kind = ND_BLOCK;
+      Node *tmp = block;
+      DEBUG_PRINT();
+      while (!consume("}")) {
+        tmp->next = stmt();
+        tmp = tmp->next;
+      }
+      node->next = block;
+    }
+    DEBUG_PRINT();
+    return node;
+  } else {
+    error("関数が宣言されていません。");
+  }
+}
+
+static Node *function_args() {
+  LVar *lvar;
+  Node *node;
+  if (consume(")"))
+    return NULL;
+  // Token *tok = consume_ident();
+  // if (tok) {
+  DEBUG_PRINT();
+  node = create_lvar();
+  DEBUG_PRINT();
+  //}
+  Node *tmp = node;
+  while (consume(",")) {
+    // tok = consume_ident();
+    // if (tok) {
+    tmp->next = create_lvar();
+    tmp = tmp->next;
+    //}
+  }
+  expect(")");
+  DEBUG_PRINT();
+
+  return node;
+}
+
+static Node *create_lvar() {
+  Node *node = calloc(1, sizeof(Node));
+  LVar *lvar;
+  Token *tok = consume_ident();
+  if (tok) {
+    lvar = calloc(1, sizeof(LVar));
+    lvar->next = locals;
+    lvar->name = tok->str;
+    lvar->len = tok->len;
+    if (locals == NULL) {
+      lvar->offset = 8;
+    } else {
+      lvar->offset = locals->offset + 8;
+    }
+    node->offset = lvar->offset;
+    locals = lvar;
+    return node;
+  } else {
+    error("引数が正しくありません。");
+  }
+}
 // stmt = expr ";"
 //      | "if" "(" expr ")" stmt ("else" stmt)?
 //      | "while" "(" expr ")" stmt
@@ -240,7 +320,7 @@ static Node *primary() {
   if (tok) {
     Node *node = calloc(1, sizeof(Node));
     if (consume("(")) {
-      node->kind = ND_FUNC;
+      node->kind = ND_FUNCCALL;
       node->funcname = strndup(tok->str, tok->len);
       node->args = args();
     } else {
@@ -273,7 +353,7 @@ static Node *primary() {
   return new_node_num(expect_number());
 }
 
-// args = (assign ("," assign)*)?
+// args = (assign ("," assign)* )? ")"
 static Node *args() {
   if (consume(")"))
     return NULL;

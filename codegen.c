@@ -83,17 +83,18 @@ void gen(Node *node) {
     }
     printf("  jmp .Lbegin%03d\n", label_cnt);
     printf(".Lend%03d:\n", label_cnt);
+    label_cnt++;
     return;
   case ND_BLOCK:
     for (Node *block = node->next; block; block = block->next) {
       gen(block);
-      arg_num++;
       //　式の評価結果としてスタックに一つの値が残っている
       //　はずなので、スタックが溢れないようにポップしておく
       printf("  pop rax\n");
     }
     return;
-  case ND_FUNC:
+  case ND_FUNCCALL:
+    arg_num = 0;
     for (Node *arg = node->args; arg; arg = arg->next) {
       gen(arg);
       arg_num++;
@@ -107,10 +108,35 @@ void gen(Node *node) {
     printf("  mov rax, rsp\n");
     printf("  and rax, 15\n");
     printf("  cmp rax, 0\n");
-    printf("  je .Laligned\n");
+    printf("  je .Laligned%03d\n", label_cnt);
     printf("  sub rsp, 8\n");
-    printf(".Laligned:\n");
+    printf(".Laligned%03d:\n", label_cnt);
     printf("  call %s\n", node->funcname);
+    label_cnt++;
+    return;
+  case ND_FUNC:
+    printf("%s:\n", node->funcname);
+    //　プロローグ
+    printf("  push rbp\n");
+    printf("  mov rbp, rsp\n");
+    arg_num = 0;
+    //　引数の領域を確保する。
+    for (Node *arg = node->args; arg; arg = arg->next) {
+      printf("  sub rsp, %d\n", arg->offset);
+      arg_num++;
+    }
+    //　ローカル変数４個分の領域を確保する。
+    printf("  sub rsp, 32\n");
+
+    // ブロックの中身を生成する。
+    gen(node->next);
+
+    //　エピローグ
+    //　最後の式の結果がRAXに残っているのでそれが返り値になる
+    printf("  mov rsp, rbp\n");
+    printf("  pop rbp\n");
+    printf("  ret\n");
+
     return;
   }
 
