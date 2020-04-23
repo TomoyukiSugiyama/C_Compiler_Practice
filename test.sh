@@ -59,6 +59,7 @@ func_call()  {
 
     ./9cc "$input" > tmp.s
     gcc -o tmp tmp.s $lib
+    echo "$input =>"
     ./tmp
 }
 (cd test_asset/lib ; make)
