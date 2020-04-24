@@ -19,7 +19,6 @@ int main(int argc, char **argv) {
   printf(".global main\n");
 
   // アセンブリコードを生成する
-  //  gen(codes->next);
   codegen(prog);
 
   return 0;

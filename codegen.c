@@ -10,12 +10,13 @@ static void gen_lval(Node *node) {
   printf("  sub rax, %d\n", node->offset);
   printf("  push rax\n");
 }
-
+// プログラム内の関数毎に、コードを生成
 void codegen(Program *program) {
   for (Function *func = program->func->next; func; func = func->next) {
     gen(func->node);
   }
 }
+// 関数内のノード毎に、コードを生成
 static void gen(Node *node) {
   static int label_cnt = 0;
   int arg_num = 0;
@@ -119,6 +120,8 @@ static void gen(Node *node) {
     printf("  sub rsp, 8\n");
     printf(".Laligned%03d:\n", label_cnt);
     printf("  call %s\n", node->funcname);
+    // 関数の返り値をスタックに積む。
+    printf("  push rax\n");
     label_cnt++;
     return;
   case ND_FUNC:

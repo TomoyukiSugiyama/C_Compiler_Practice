@@ -96,6 +96,18 @@ try 5  'main(x,y){a=5;x=3;y=2;return a;}'
 try 3  'main(x,y){a=5;x=3;y=2;return x;}'
 try 2  'main(x,y){a=5;x=3;y=2;return y;}'
 
-#try 4  'main(){a=5;x=1;y=2;z=foo(x,y);return z;} foo(x,y){return y+2;}'
+FUNC_TEST="main(){x=2;foo1(x);} foo1(x){foo(x+2);}"
+FUNC_LIB="test_asset/lib/func_call_01_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
+FUNC_TEST="main(){x=2;y=3;foo1(x,y);} foo1(x,y){foo(x,y);}"
+FUNC_LIB="test_asset/lib/func_call_02_arg_lib.o"
+func_call "$FUNC_TEST" $FUNC_LIB
+
+try 3  'main(){x=1;return foo(x);} foo(x){return x+2;}'
+try 4  'main(){a=5;x=1;y=2;return foo(x,y);} foo(x,y){return y+2;}'
+
+FUNC_LOCAL_VAR_TEST=`cat test_asset/func_and_local_variable.c`
+try 55  "$FUNC_LOCAL_VAR_TEST"
 
 echo ok

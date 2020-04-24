@@ -58,9 +58,10 @@ static int expect_number() {
   return val;
 }
 
+// 最後のトークンに到達したかどうかを判定する。
 static bool at_eof() { return token->kind == TK_EOF; }
 
-// 変数を名前で検索する。見つからなかった場合はNULLを返す、
+// 変数を名前で検索する。見つからなかった場合はNULLを返す。
 LVar *find_lvar(Token *tok) {
   for (LVar *var = locals; var; var = var->next)
     if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
@@ -328,8 +329,10 @@ static Node *primary() {
       node->kind = ND_LVAR;
       LVar *lvar = find_lvar(tok);
       if (lvar) {
+        // 定義済みのローカル変数を使用
         node->offset = lvar->offset;
       } else {
+        // ローカル変数を新規に追加
         lvar = calloc(1, sizeof(LVar));
         lvar->next = locals;
         lvar->name = tok->str;
