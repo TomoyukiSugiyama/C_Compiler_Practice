@@ -1,6 +1,6 @@
 #include "9cc.h"
 
-static Node *function();
+static Function *function();
 static Node *function_args();
 static Node *create_lvar();
 static Node *stmt();
@@ -13,6 +13,11 @@ static Node *mul();
 static Node *unary();
 static Node *primary();
 static Node *args();
+
+// プログラムを保存
+Program *prog;
+// ローカル変数を保存
+static LVar *locals;
 
 //　次のトークンが期待している記号のときには、トークンを１つ読み進めて
 //　真を返す。それ以外の場合には偽を返す。
@@ -83,27 +88,29 @@ static Node *new_node_num(int val) {
 // program = function*
 void program() {
   int i = 0;
-  codes = calloc(1, sizeof(Node));
-  codes->next = NULL;
-  Node *tmp = codes;
+  prog = calloc(1, sizeof(Program));
 
+  prog->func = calloc(1, sizeof(Function));
+  Function *ftmp = prog->func;
   while (!at_eof()) {
-    tmp->next = function();
-    tmp = tmp->next;
+    ftmp->next = function();
+    ftmp = ftmp->next;
   }
 }
-// function = ident "(" args ("{" stmt* "}")?
-static Node *function() {
+// function = ident "(" function_args ("{" stmt* "}")?
+static Function *function() {
+  Function *func = calloc(1, sizeof(Function));
+  locals = func->locals;
   DEBUG_PRINT();
   Token *tok = consume_ident();
   if (tok) {
-    Node *node = calloc(1, sizeof(Node));
+    func->node = calloc(1, sizeof(Node));
     DEBUG_PRINT();
 
     if (consume("(")) {
-      node->kind = ND_FUNC;
-      node->funcname = strndup(tok->str, tok->len);
-      node->args = function_args();
+      func->node->kind = ND_FUNC;
+      func->node->funcname = strndup(tok->str, tok->len);
+      func->node->args = function_args();
     }
     DEBUG_PRINT();
     if (consume("{")) {
@@ -115,40 +122,34 @@ static Node *function() {
         tmp->next = stmt();
         tmp = tmp->next;
       }
-      node->block = block;
+      func->node->block = block;
     }
     DEBUG_PRINT();
-    return node;
+    return func;
   } else {
     error("関数が宣言されていません。");
   }
 }
-
+// function_args = (create_lvar ("," create_lvar)* )? ")"
 static Node *function_args() {
   LVar *lvar;
   Node *node;
   if (consume(")"))
     return NULL;
-  // Token *tok = consume_ident();
-  // if (tok) {
   DEBUG_PRINT();
   node = create_lvar();
   DEBUG_PRINT();
-  //}
   Node *tmp = node;
   while (consume(",")) {
-    // tok = consume_ident();
-    // if (tok) {
     tmp->next = create_lvar();
     tmp = tmp->next;
-    //}
   }
   expect(")");
   DEBUG_PRINT();
 
   return node;
 }
-
+// create_lvar = ident
 static Node *create_lvar() {
   Node *node = calloc(1, sizeof(Node));
   LVar *lvar;

@@ -1,4 +1,6 @@
 #include "9cc.h"
+static void gen(Node *node);
+static void gen_lval(Node *node);
 
 static void gen_lval(Node *node) {
   if (node->kind != ND_LVAR)
@@ -9,7 +11,12 @@ static void gen_lval(Node *node) {
   printf("  push rax\n");
 }
 
-void gen(Node *node) {
+void codegen(Program *program) {
+  for (Function *func = program->func->next; func; func = func->next) {
+    gen(func->node);
+  }
+}
+static void gen(Node *node) {
   static int label_cnt = 0;
   int arg_num = 0;
   char *arg_reg[10] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
@@ -127,8 +134,8 @@ void gen(Node *node) {
         printf("  push %s\n", arg_reg[arg_num]);
         arg_num++;
       }
-      //　ローカル変数４個分の領域を確保する。
-      printf("  sub rsp, 32\n");
+      //　ローカル変数８個分の領域を確保する。
+      printf("  sub rsp, 64\n");
 
       // ブロックの中身を生成する。
       gen(func->block);

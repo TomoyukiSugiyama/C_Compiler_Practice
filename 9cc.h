@@ -85,8 +85,16 @@ struct LVar {
 typedef struct Function Function;
 // 関数
 struct Function {
-  Function *next;
-  char *name;
+  Function *next; //　次の関数かNULL
+  char *name;     // 関数名
+  Node *node;     // 関数内のノード
+  LVar *locals;   // 関数内のローカル変数
+};
+
+typedef struct Program Program;
+// プログラム
+struct Program {
+  Function *func;
 };
 
 // 入力プログラム
@@ -94,12 +102,8 @@ extern char *user_input;
 
 //　現在着目しているトークン
 extern Token *token;
-// パースの結果を保存
-extern Node *codes;
-// ブロック(複文)を保存
-// extern Node *block[100];
-// ローカル変数
-extern LVar *locals;
+// プログラムを保存
+extern Program *prog;
 
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
@@ -107,7 +111,8 @@ void error_at(char *loc, char *fmt, ...);
 void program();
 
 Token *tokenize();
-void gen(Node *node);
+// void gen(Node *node);
+void codegen(Program *program);
 //#define DEBUG 11111
 #if DEBUG
 #define DEBUG_PRINT()                                                          \
