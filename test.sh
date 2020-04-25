@@ -110,4 +110,6 @@ try 4  'main(){a=5;x=1;y=2;return foo(x,y);} foo(x,y){return y+2;}'
 FUNC_LOCAL_VAR_TEST=`cat test_asset/func_and_local_variable.c`
 try 55  "$FUNC_LOCAL_VAR_TEST"
 
+#FIBONACCI_TEST=`cat test_asset/fibonacci.c`
+#try 89  "$FIBONACCI_TEST"
 echo ok
