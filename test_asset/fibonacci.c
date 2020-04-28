@@ -1,10 +1,13 @@
 fibonacci(n) {
   if (n == 0)
-    return 3;
+    return 0;
   if (n == 1)
-    return 2;
-  if (n == 2)
-    return fibonacci(n - 1) + fibonacci(n - 2);
+    return 1;
+  if (n >= 2) {
+    x = fibonacci(n - 1);
+    y = fibonacci(n - 2);
+    return x + y;
+  }
 }
 
-main() { return fibonacci(2); }
+main() { return fibonacci(10); }

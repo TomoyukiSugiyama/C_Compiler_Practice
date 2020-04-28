@@ -28,4 +28,5 @@ func_call()  {
 (cd test_asset/lib ; make)
 
 FIBONACCI_TEST=`cat test_asset/fibonacci.c`
-try 89  "$FIBONACCI_TEST"
+try 55 "$FIBONACCI_TEST"
+
